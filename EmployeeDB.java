@@ -1,44 +1,3 @@
-1. Install & Set Up MySQL
-
-Download & Install MySQL
-
-From: https://dev.mysql.com/downloads/mysql/
-
-Install MySQL Server & MySQL Workbench (GUI for DB).
-
-Create Database & Table
-Open MySQL Workbench → Run:
-
-CREATE DATABASE company_db;
-USE company_db;
-
-CREATE TABLE employees (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100),
-    role VARCHAR(50),
-    salary DOUBLE
-);
-
-
-2. Prepare JDBC Driver
-
-Download MySQL JDBC driver:
-https://dev.mysql.com/downloads/connector/j/
-
-Extract the .jar file (e.g., mysql-connector-j-8.x.x.jar).
-
-In VS Code, you’ll add this JAR to your project’s referenced libraries.
-
-3. Create Java Project in VS Code
-
-Command Palette → Java: Create Java Project → No build tools
-
-Name it: EmployeeDatabaseApp
-
-Inside src, create file: EmployeeDB.java
-
-4. Add JDBC Code
-
 import java.sql.*;
 import java.util.Scanner;
 
@@ -49,7 +8,7 @@ public class EmployeeDB {
 
     public static void main(String[] args) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Scanner sc = new Scanner(System.in)) {
+                Scanner sc = new Scanner(System.in)) {
 
             System.out.println("Connected to Database.");
 
@@ -68,7 +27,10 @@ public class EmployeeDB {
                     case 2 -> viewEmployees(conn);
                     case 3 -> updateEmployee(conn, sc);
                     case 4 -> deleteEmployee(conn, sc);
-                    case 5 -> { System.out.println("Exiting..."); return; }
+                    case 5 -> {
+                        System.out.println("Exiting...");
+                        return;
+                    }
                     default -> System.out.println("Invalid choice!");
                 }
             }
@@ -98,7 +60,7 @@ public class EmployeeDB {
     static void viewEmployees(Connection conn) throws SQLException {
         String sql = "SELECT * FROM employees";
         try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 System.out.printf("%d - %s - %s - %.2f%n",
                         rs.getInt("id"),
@@ -140,19 +102,3 @@ public class EmployeeDB {
         }
     }
 }
-
-5. Add MySQL Connector to VS Code
-
-Right-click your project folder → New Folder → name lib
-
-Copy the mysql-connector-j-x.x.x.jar into lib
-
-In VS Code: Right-click the JAR → Add to Referenced Libraries
-
-6. Run the Program 
-
-javac -cp "lib/mysql-connector-j-8.x.x.jar;src" src/EmployeeDB.java
-java -cp "lib/mysql-connector-j-8.x.x.jar;src" EmployeeDB
-
-
-(Use : instead of ; if on Mac/Linux.)
